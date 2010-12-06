@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Assembla API</title>
+<script type="text/javascript" src="js/lib/jquery-1.4.4.min.js"></script>
+<script src="http://www.google.com/jsapi?key=ABQIAAAA08mC7k8t3lTuy9CGQIIHIhSRj8e4fMsH_uE8W4_pkKB3mRc58hQO-3gtEmWA7Za4m7AZHaNB8Z_pqg" language="javascript"></script>
+<script>
+	$(function()
+	{
+		console.debug( "hi" );
+		console.debug( "Loader", google.loader );
+		if( google.loader.ClientLocation != null ) 
+		{
+			document.write( "Your Location Is: " + google.loader.ClientLocation.address.city + ", " + google.loader.ClientLocation.address.region );
+		} 
+		else 
+		{
+			document.write( "Your Location Was Not Detected By Google Loader" );
+		}
+
+	});
+</script>
+</head>
+
+<body>
+</body>
+</html>
