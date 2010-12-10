@@ -1,6 +1,7 @@
 <!--- Defaults --->
 <cfparam name="authToken" default="" type="string" />
 <cfset result = new cfc.Result() />
+<cfset api = new api.assembla.cfc.AssemblaFacade() />
 
 <!--- Functions --->
 <cffunction name="checkAuthToken">
@@ -26,7 +27,7 @@
 <cfif structKeyExists( url, "key" )>
 	<cfset authToken = url.key />
 </cfif>
-<cfset api = new api.assembla.cfc.AssemblaAPI() />
+
 <cfset restList = listToArray( url.rest, "/" ) />
 <cfdump var="#restList#"/>
 <!--- Determine what call to make based on the params sent --->
@@ -34,7 +35,20 @@
 	
 	<!--- Reqeust for spaces --->
 	<cfcase value="spaces">
-		<cfset result.setResult( api.getAllSpaces( authToken ) ) />
+		<cfset result.setMessage( "" ) />
+		<cfset result.setStatus( "success" ) />
+		<cfset result.setResult( variables.api.getAllSpaces( authToken ) ) />
+	</cfcase>
+
+	<!--- Reqeust for tickets: should have tickets/{space-id}/{page-number} --->
+	<cfcase value="tickets">
+		<!---<cfset result.setMessage( "" ) />
+		<cfset result.setStatus( "success" ) />--->
+		<cfif arraylen( restList ) is 3>
+			<cfset result.setResult( variables.api.getTicketsForSpace( authToken, restList[2], restList[3] ) ) />
+		<cfelse>
+			<cfset result.setResult( variables.api.getTicketsForSpace( authToken, restList[2] ) ) />
+		</cfif>
 	</cfcase>
 	
 	<!--- Nothing matched --->

@@ -29,11 +29,11 @@
 	<cffunction name="load" access="remote" returntype="string">
         <cfset var result = "" />
         <cftry>
-	        
+			
 	        <cfhttp url="#this.getURL()#" 
-				method="#this.getMethod()#"
-				username="realeyes" password="R3al3y3s!">
+				method="#this.getMethod()#">
 	        	<cfhttpparam type="header" name="Accept" value="application/xml" />
+	        	<cfhttpparam type="header" name="Authorization" value="#this.getAuthToken()#" />
 	        </cfhttp>
 	        <cfset result = cfhttp.FileContent />
 			

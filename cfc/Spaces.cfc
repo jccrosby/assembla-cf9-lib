@@ -1,10 +1,10 @@
 <cfcomponent>
-	<cffunction name="getSpaces" access="public" returntype="array" output="true">
-		<cfargument name="rest" required="true" type="string">
+	<cffunction name="getSpaces" access="public" returntype="array" output="false">
+		<cfargument name="authToken" type="string" required="true" />
 		<cfset spaces = arrayNew( 1 ) />
 		<!--- Request spaces --->
 		<!--- Create request --->
-		<cfset svc = new AssemblaRequest( arguments.rest ) />
+		<cfset svc = new AssemblaRequest( "spaces/my_spaces", arguments.authToken ) />
 		
 		<!--- Load the request --->
 		<cfset result = svc.load() />
