@@ -23,8 +23,36 @@
 			<cfset newSpace.setParentId( spaceXML["parent-id"].XmlText ) />
 			<cfset arrayAppend( spaces, newSpace ) />
 		</cfloop>
-		
+			
 		<!--- Return array --->
 		<cfreturn spaces />
+	</cffunction>
+	
+	<cffunction name="getSpaceUsers" access="public" returntype="array" output="false">
+		<cfargument name="authToken" type="string" required="true" />
+		<cfargument name="spaceId" type="string" required="true" />
+		<cfset users = arrayNew( 1 ) />
+		
+		<!--- Request space users --->
+		<!--- Create request --->
+		<cfset svc = new AssemblaRequest( "spaces/" & arguments.spaceId & "/users", arguments.authToken ) />
+		
+		<!--- Load the request --->
+		<cfset result = svc.load() />
+		<cfset xmlResult = xmlParse( result ) />
+		
+		<!--- Parse spaces XML respone into Array of space objects --->
+		<!--- handle the response --->
+		
+		<cfloop index="i" from="1" to="#arrayLen( xmlResult.users.XmlChildren )#" step="1">
+			<cfset usersXML = xmlResult.users[ "user" ][ i ] />
+			<cfset newUser = new vo.User() />
+			<cfset newUser.setID( usersXML.id.xmlText ) />
+			<cfset newUser.setLoginName( usersXML["login_name"].xmlText ) />
+			<cfset arrayAppend( users, newUser) />
+		</cfloop>
+		
+		<!--- Return array --->
+		<cfreturn users />
 	</cffunction>
 </cfcomponent>

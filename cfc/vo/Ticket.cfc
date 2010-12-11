@@ -22,7 +22,7 @@
 </tickets>
  --->
  
-	<cfproperty name="type" type="string" default="Ticket" />
+	<cfproperty name="type" type="string" default="Ticket" setter="false" />
 	<cfproperty name="id" type="string" />
 	<cfproperty name="number" type="string" />
 	<cfproperty name="summary" type="string" />
