@@ -30,24 +30,29 @@
 
 <cfset restList = listToArray( url.rest, "/" ) />
 <cfdump var="#restList#"/>
+
+<cfset result.setMessage( "" ) />
+<cfset result.setStatus( "success" ) />
 <!--- Determine what call to make based on the params sent --->
 <cfswitch expression="#restList[1]#">
 	
 	<!--- Reqeust for spaces --->
 	<cfcase value="spaces">
-		<cfset result.setMessage( "" ) />
-		<cfset result.setStatus( "success" ) />
-		<cfset result.setResult( variables.api.getAllSpaces( authToken ) ) />
+	<cfset restLen = arraylen( restList ) />
+	<cfif restLen is 1><!--- http://www.assembla.com/spaces/my_spaces --->
+		<cfset result.setResult( variables.api.getSpaces( authToken ) ) />
+	<cfelseif restLen is 3><!--- http://www.assembla.com/spaces/{space_id}/tickets/report/{report_id}/{page} --->
+		<cfset result.setResult( variables.api.getSpaceTickets( authToken, restList[2], restList[3] ) ) />
+	</cfif>
 	</cfcase>
 
-	<!--- Reqeust for tickets: should have tickets/{space-id}/{page-number} --->
+	
 	<cfcase value="tickets">
-		<!---<cfset result.setMessage( "" ) />
-		<cfset result.setStatus( "success" ) />--->
+		<!--- Reqeust for tickets: should have tickets/{space-id}/{page-number} --->
 		<cfif arraylen( restList ) is 3>
-			<cfset result.setResult( variables.api.getTicketsForSpace( authToken, restList[2], restList[3] ) ) />
+			<cfset result.setResult( variables.api.getSpaceTickets( authToken, restList[2], restList[3] ) ) />
 		<cfelse>
-			<cfset result.setResult( variables.api.getTicketsForSpace( authToken, restList[2] ) ) />
+			<cfset result.setResult( variables.api.getSpaceTickets( authToken, restList[2] ) ) />
 		</cfif>
 	</cfcase>
 	
