@@ -1,6 +1,8 @@
 # Files
 settings.xml
+.project
 
 # Directories
+.settings/**/
 
 # Wildcards
