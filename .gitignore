@@ -3,6 +3,6 @@ settings.xml
 .project
 
 # Directories
-.settings/**/
+.settings/**/*
 
 # Wildcards
