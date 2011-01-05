@@ -11,7 +11,7 @@
     <cfproperty name="releaseNotes" default="" type="string">
     <cfproperty name="prettyReleaseLevel" default="" type="string">
 	
-	<cffunction name="init" returntype="Space">
+	<cffunction name="init" returntype="Milestone">
 		<cfset setType( "Space" ) />
 		<cfreturn this />
 	</cffunction>

@@ -14,11 +14,19 @@
 		<cfset tickets = new Tickets() />
 		<cfreturn tickets.getTicketReport( arguments.authToken, arguments.spaceId, arguments.reportID, arguments.page ) />
 	</cffunction>
-
+	
+    <cffunction name="getSpaceMilestones" access="remote" returntype="Array">
+		<cfargument name="authToken" required="true" type="string" />
+        <cfargument name="spaceId" required="true" type="string" />
+		<cfset milestones = new Milestones() />
+		<cfreturn milestones.getSpaceMilestones( arguments.authToken, arguments.spaceId ) />
+	</cffunction>
+    
 	<cffunction name="getSpaceUsers" access="remote" returntype="Array">
 		<cfargument name="authToken" required="true" type="string" />
+        <cfargument name="spaceId" required="true" type="string" />
 		<cfset spaces = new Spaces() />
-		<cfreturn spaces.getSpaceUsers( arguments.authToken ) />
+		<cfreturn spaces.getSpaceUsers( arguments.authToken, arguments.spaceId ) />
 	</cffunction>
 	
 </cfcomponent>
