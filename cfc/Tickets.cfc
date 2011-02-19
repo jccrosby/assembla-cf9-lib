@@ -1,7 +1,7 @@
-﻿<cfcomponent>
+﻿<cfcomponent output="true">
 
 <!--- http://www.assembla.com/spaces/<space_id>/tickets/report/<report_id> --->
-	<cffunction name="getTicketReport" access="public" returntype="array" output="true">
+	<cffunction name="getTicketReport" access="public" returntype="array">
 		<cfargument name="authToken" type="string" required="true" />
 		<cfargument name="spaceId" type="string" required="true" />
 		<cfargument name="reportID" type="numeric" required="false" default="0" />
@@ -11,6 +11,9 @@
 		<!--- Request tickets --->
 		<!--- Create request --->
 		<cfset rest = "spaces/" & arguments.spaceId & "/tickets/report/" & arguments.reportID />
+		<cfif arguments.page gt 1>
+			<cfset rest = rest & "?page=" & arguments.page />
+		</cfif>
 		<cfset svc = new AssemblaRequest( rest, arguments.authToken ) />
 		
 		<!--- Load the request --->
@@ -39,6 +42,23 @@
 				<cfset newTicket.setCreatedOn( _parseISODateTime( ticketXML["created-on"].XmlText ) ) />
 				<cfset newTicket.setUpdatedAt( _parseISODateTime( ticketXML["updated-at"].XmlText ) ) />
 				<cfset newTicket.setWorkingHours( numberFormat( ticketXML["working-hours"].XmlText, "9" ) ) />
+				
+				<!--- Custom fields --->
+				<cfif structKeyExists(ticketXML, "custom-fields") and structKeyExists( ticketXML["custom-fields"], "XMLChildren" )>
+					<cfset fieldXML = ticketXML["custom-fields"].XmlChildren />
+					<cfloop index="j" from="1" to="#arrayLen(fieldXML)#">
+						<cfset field = fieldXML[j] />
+						
+						<cfif field.XmlAttributes.name eq "Original Estimatation">
+							<cfset newTicket.setOrigHourEst(field.XmlText) />
+						</cfif>
+						
+						<cfif field.XmlAttributes.name eq "Type">
+							<cfset newTicket.setTicketType(field.XmlText) />
+						</cfif>
+						
+					</cfloop>
+				</cfif>
 				
 				<cfset arrayAppend( tickets, newTicket ) />
 			</cfloop>
@@ -61,6 +81,7 @@
 		
 		<!--- Load the request --->
 		<cfset result = svc.load() />
+		
 		<cfif isXML( result )>
 			<cfset xmlResult = xmlParse( result ) />
 			
@@ -85,6 +106,24 @@
 				<cfset newTicket.setCreatedOn( _parseISODateTime( ticketXML["created-on"].XmlText ) ) />
 				<cfset newTicket.setUpdatedAt( _parseISODateTime( ticketXML["updated-at"].XmlText ) ) />
 				<cfset newTicket.setWorkingHours( numberFormat( ticketXML["working-hours"].XmlText, "9" ) ) />
+				
+				<!--- Custom fields --->
+				<!--- TODO: Move this to a helper method --->
+				<cfif structKeyExists(ticketXML, "custom-fields") and structKeyExists( ticketXML["custom-fields"], "XMLChildren" )>
+					<cfset fieldXML = ticketXML["custom-fields"].XmlChildren />
+					<cfloop index="j" from="1" to="#arrayLen(fieldXML)#">
+						<cfset field = fieldXML[j] />
+						
+						<cfif field.XmlAttributes.name eq "Original Estimatation">
+							<cfset newTicket.setOrigHourEst(field.XmlText) />
+						</cfif>
+						
+						<cfif field.XmlAttributes.name eq "Type">
+							<cfset newTicket.setTicketType(field.XmlText) />
+						</cfif>
+						
+					</cfloop>
+				</cfif>
 				
 				<cfset arrayAppend( tickets, newTicket ) />
 			</cfloop>

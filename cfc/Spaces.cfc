@@ -21,6 +21,7 @@
 			<cfset newSpace.setName( spaceXML.name.XmlText ) />
 			<cfset newSpace.setDescription( spaceXML.description.XmlText ) />
 			<cfset newSpace.setParentId( spaceXML["parent-id"].XmlText ) />
+			<!--- TODO: Fix 'tags' is undefined <cfset newSpace.setTags( spaceXML["tags"].XmlText ) />--->
 			<cfset arrayAppend( spaces, newSpace ) />
 		</cfloop>
 			
