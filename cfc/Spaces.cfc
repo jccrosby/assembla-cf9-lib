@@ -57,7 +57,7 @@
 					
 					updatedAt = dateUtil.ISOToDateTime(taskXML["updated-at"].xmlText);
 					if(updatedAt != "")
-						task.setUpatedAt(parseDateTime(updatedAt));
+						task.setUpdatedAt(parseDateTime(updatedAt));
 					
 					arrayAppend(tasks, task);
 				</cfscript>
