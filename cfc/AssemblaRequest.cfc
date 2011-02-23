@@ -10,10 +10,10 @@
 	<cffunction name="init" access="public" returntype="string">
 		<cfargument name="rest" required="true" type="string">
 		<cfargument name="authToken" required="false" type="string" default="">	
+		<cfargument name="data" required="false" type="string" default="">
 		<cfargument name="protocol" required="false" type="string" default="http">	
 		<cfargument name="uri" required="false" type="string" default="www.assembla.com">
 		<cfargument name="method" required="false" type="string" default="GET">	
-		<cfargument name="data" required="false" type="string" default="">
 		
 		<cfscript>
 			this.setRest( arguments.rest );

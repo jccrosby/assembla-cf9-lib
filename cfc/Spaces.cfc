@@ -1,4 +1,72 @@
-<cfcomponent>
+<cfcomponent output="true">
+	
+	<cfscript>
+		dateUtil = new util.DateUtil();
+	</cfscript>
+	
+	<cffunction name="getTimeEntries" access="public" returntype="array">
+		<cfargument name="authToken" type="string" required="true" />
+		<cfargument name="spaceID" type="string" required="true" />
+		<cfargument name="fromDate" type="date" required="true" />
+		<cfargument name="untilDate" type="date" required="true" />
+		
+		<!--- FIXME: This is a special case, trying to get to all the time data --->
+		<cfset requestURL = "https://www.assembla.com/spaces/" & arguments.spaceID & "/time_entries" />
+		<cfhttp method="get" url="#requestURL#">
+			<cfhttpparam type="header" name="Accept" value="application/xml">
+			<cfhttpparam type="header" name="Authorization" value="#arguments.authToken#" />
+			<cfhttpparam type="formfield" name="from_date" value="#arguments.fromDate#">
+			<cfhttpparam type="formfield" name="until_date" value="#arguments.untilDate#">
+		</cfhttp>
+		<cfset result = cfhttp.FileContent />
+		
+		<cfset tasks = arrayNew(1)/>
+		
+		<cfif isXML(result)>
+			<cfset xmlResult = xmlParse(result) />
+			<!--- Parse spaces XML respone into Array of space objects --->
+			<!--- handle the response --->
+			<cfloop index="i" from="1" to="#arrayLen( xmlResult.tasks.XmlChildren )#" step="1">
+				<cfscript>
+					taskXML = xmlResult.tasks[ "task" ][ i ];
+					task = new vo.Task();
+					
+					task.setId(taskXML.id.xmlText);
+					task.setHours(taskXML.hours.xmlText);
+					task.setDescription(taskXML.description.xmlText);
+					task.setSpaceID(taskXML["space-id"].xmlText);
+					task.setTicketID(taskXML["ticket-id"].xmltext);
+					task.setUserID(taskXML["user-id"].xmlText);
+					task.setBilled(taskXML.billed.xmlText);
+					
+					ticketNumber = taskXML["ticket-number"].xmlText;
+					if(ticketNumber != "")
+						task.setTicketNumber(ticketNumber);
+					
+					beginAt = dateUtil.ISOToDateTime(taskXML["begin-at"].xmlText);
+					if(beginAt != "")
+						task.setBeginAt(parseDateTime(beginAt));
+					
+					endAt = dateUtil.ISOToDateTime(taskXML["end-at"].xmlText);
+					if(endAt != "")
+						task.setEndAt(parseDateTime(endAt));
+
+					createdAt = dateUtil.ISOToDateTime(taskXML["created-at"].xmlText);
+					if(createdAt != "")
+						task.setCreatedAt(parseDateTime(createdAt));
+					
+					updatedAt = dateUtil.ISOToDateTime(taskXML["updated-at"].xmlText);
+					if(updatedAt != "")
+						task.setUpatedAt(parseDateTime(updatedAt));
+					
+					arrayAppend(tasks, task);
+				</cfscript>
+			</cfloop>
+		</cfif>
+		
+		<cfreturn tasks/>
+	</cffunction>
+	
 	<cffunction name="getSpaces" access="public" returntype="array" output="false">
 		<cfargument name="authToken" type="string" required="true" />
 		<cfset spaces = arrayNew( 1 ) />
