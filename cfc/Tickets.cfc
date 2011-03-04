@@ -33,8 +33,8 @@
 				<cfset newTicket.setSummary( ticketXML.summary.XmlText ) />
 				<cfset newTicket.setReporterId( ticketXML["reporter-id"].XmlText ) />
 				<cfset newTicket.setAssignedToId( ticketXML["assigned-to-id"].XmlText ) />
-				<cfset newTicket.setPriority( ticketXML.status.XmlText ) />
-				<cfset newTicket.setStatus( ticketXML.priority.XmlText ) />
+				<cfset newTicket.setPriority( ticketXML.priority.XmlText ) />
+				<cfset newTicket.setStatus( ticketXML.status.XmlText ) />
 				<cfset newTicket.setComponentId( ticketXML["component-id"].XmlText ) />
 				<cfset newTicket.setDescription( ticketXML.description.XmlText ) />
 				<cfset newTicket.setMilestoneId( ticketXML["milestone-id"].XmlText ) />
@@ -48,7 +48,7 @@
 					<cfset fieldXML = ticketXML["custom-fields"].XmlChildren />
 					<cfloop index="j" from="1" to="#arrayLen(fieldXML)#">
 						<cfset field = fieldXML[j] />
-						
+						 
 						<cfif field.XmlAttributes.name eq "Original Estimatation">
 							<cfset newTicket.setOrigHourEst(field.XmlText) />
 						</cfif>
